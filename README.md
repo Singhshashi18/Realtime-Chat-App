@@ -27,7 +27,7 @@ Follow the steps to run this project locally:
 git clone https://github.com/Singhshashi18/Realtime-Chat-App.git
 
 # Go to project directory
-cd Realtime-Chat-App
+cd Chat-App
 
 # Install server dependencies
 npm install
