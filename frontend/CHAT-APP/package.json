@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "postinstall": "tailwindcss init oxide"
+    "preview": "vite preview"
+    
   },
   "dependencies": {
     "@tailwindcss/oxide": "^4.1.3",
