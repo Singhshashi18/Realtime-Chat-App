@@ -1,48 +1,72 @@
 import React, { useEffect } from 'react'
 import "./index.css"
 import Navbar from './components/Navbar'
+import ErrorBoundary from './components/ErrorBoundary'
+import LoadingSpinner from './components/LoadingSpinner'
 import { Routes,Route, Navigate } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
-import SettingPage from './pages/settingPage'
+import SettingPage from './pages/SettingPage'
 import ProfilePage from './pages/ProfilePage'
 import SignupPage from './pages/SignupPage'
 import { useAuthStore } from './store/useAuthStore'
-import {Loader} from 'lucide-react'
 import {Toaster} from 'react-hot-toast'
 import {useThemeStore} from './store/useThemeStore'
 const App = () => {
-  const {authUser,checkAuth,isCheckingAuth,onlineUsers} =useAuthStore();
+  const {authUser,checkAuth,isCheckingAuth} =useAuthStore();
    const {theme} = useThemeStore();
-   console.log({onlineUsers})
-  //  console.log("current theme:",theme)
+   
   useEffect(()=>{
     checkAuth()
   },[checkAuth]);
-  console.log({authUser});
-  // useEffect(()=>{
-  //   document.documentElement.setAttribute("data-theme",theme);
-  // },[theme])
+  
+  useEffect(()=>{
+    document.documentElement.setAttribute("data-theme",theme);
+  },[theme])
 
   if(isCheckingAuth && !authUser) return (
-    <div className='flex items-center justify-center h-screen'>
-      <Loader className='size-10 animate-spin'/>
+    <div className='flex items-center justify-center h-screen bg-base-200'>
+      <LoadingSpinner size="lg" text="Loading your chat..." />
     </div>
   )
   return (
-    <div data-theme={theme}>
+    <ErrorBoundary>
+      <div data-theme={theme}>
+        <Navbar/>
 
-      <Navbar/>
-
-      <Routes>
-        <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>} />
-        <Route path='/signup' element={!authUser?<SignupPage/>:<Navigate to="/login"/>} />
-        <Route path='/login' element={!authUser?<LoginPage/>:<Navigate to="/login"/>} />
-        <Route path='/settings' element={<SettingPage/>} />
-        <Route path='/profile' element={authUser ?<ProfilePage/>:<Navigate to="/login"/>} />
-      </Routes>
-      <Toaster/>
-    </div>
+        <Routes>
+          <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>} />
+          <Route path='/signup' element={!authUser?<SignupPage/>:<Navigate to="/"/>} />
+          <Route path='/login' element={!authUser?<LoginPage/>:<Navigate to="/"/>} />
+          <Route path='/settings' element={<SettingPage/>} />
+          <Route path='/profile' element={authUser ?<ProfilePage/>:<Navigate to="/login"/>} />
+        </Routes>
+        
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'hsl(var(--b1))',
+              color: 'hsl(var(--bc))',
+              border: '1px solid hsl(var(--b3))',
+            },
+            success: {
+              iconTheme: {
+                primary: 'hsl(var(--su))',
+                secondary: 'hsl(var(--suc))',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: 'hsl(var(--er))',
+                secondary: 'hsl(var(--erc))',
+              },
+            },
+          }}
+        />
+      </div>
+    </ErrorBoundary>
   )
 }
 
